@@ -27,7 +27,12 @@
  *        |           |   |                               |       |               |       -> Exit
  *        +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
  */
-(function (document) {
+
+function monkberryFactory(app) {
+
+  app.render = function (id, template, node, options) {
+    app[id] = Monkberry.render(template, node, options);  
+  }  
   /**
    * Monkberry
    * @class
@@ -196,7 +201,9 @@
     } else {
       // Render new view.
       var view = Monkberry.render(template, node, {parent: parent, context: parent.context, filters: parent.filters, directives: parent.directives, noCache: parent.noCache});
-
+      if(typeof data.id !== 'undefined') {
+        app[data.id] = view;
+      }
       // Set view hierarchy.
       parent.nested.push(view);
 
@@ -384,9 +391,6 @@
     }
   }
 
-  if (typeof module !== 'undefined') {
-    module.exports = Monkberry;
-  } else {
-    window.Monkberry = Monkberry;
-  }
-})(window.document);
+ return app; 
+
+}
